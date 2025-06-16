@@ -52,7 +52,7 @@ const browser = await puppeteer.launch({
 
 ## License
 
-ISC
+[ISC License](LICENSE) - see the [LICENSE](LICENSE) file for details.
 
 ## Issues
 

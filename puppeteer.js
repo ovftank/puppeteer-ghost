@@ -27,7 +27,9 @@ puppeteer.use(
  * @type {import('rebrowser-puppeteer').LaunchOptions}
  */
 const defaultOptions = {
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-blink-features=AutomationControlled', '--disable-notifications', '--disable-extensions', '--disable-webrtc', '--disable-webrtc-encryption', '--disable-webrtc-hw-encoding', '--disable-webrtc-hw-decoding', '--disable-save-password-bubble', '--disable-features=PasswordLeakDetection', '--disable-dev-shm-usage', '--disable-accelerated-2d-canvas', '--no-first-run', '--no-zygote', '--disable-gpu', '--disable-web-security', '--disable-features=VizDisplayCompositor', '--disable-background-timer-throttling', '--disable-backgrounding-occluded-windows', '--disable-renderer-backgrounding', '--disable-field-trial-config', '--disable-back-forward-cache', '--disable-ipc-flooding-protection', '--disable-hang-monitor', '--disable-prompt-on-repost', '--disable-sync', '--disable-domain-reliability', '--disable-component-extensions-with-background-pages', '--disable-default-apps', '--disable-plugins', '--disable-translate', '--disable-background-networking', '--disable-background-mode', '--disable-client-side-phishing-detection', '--disable-component-update', '--disable-datasaver-prompt', '--disable-desktop-notifications', '--disable-features=TranslateUI', '--disable-infobars', '--disable-offer-store-unmasked-wallet-cards', '--disable-offer-upload-credit-cards', '--disable-password-generation', '--disable-print-preview', '--disable-voice-input', '--disable-wake-on-wifi', '--enable-async-dns', '--enable-simple-cache-backend', '--enable-tcp-fast-open', '--media-cache-size=33554432', '--aggressive-cache-discard']
+    defaultViewport: null,
+    headless: false,
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-blink-features=AutomationControlled', '--disable-notifications', '--disable-extensions', '--disable-webrtc', '--disable-webrtc-encryption', '--disable-webrtc-hw-encoding', '--disable-webrtc-hw-decoding', '--disable-save-password-bubble', '--disable-features=PasswordLeakDetection']
 };
 
 const originalLaunch = puppeteer.launch.bind(puppeteer);
@@ -36,10 +38,10 @@ puppeteer.launch = async (options = {}) => {
 
     const browser = await originalLaunch(mergedOptions);
 
-    const originalNewPage = browser.newPage.bind(browser);
     browser.newPage = async () => {
+        const pages = await browser.pages();
         /** @type {import('rebrowser-puppeteer').Page} */
-        const page = await originalNewPage();
+        const page = pages[0];
 
         /**
          * click method with human-like behavior
@@ -95,6 +97,6 @@ puppeteer.launch = async (options = {}) => {
 
 /**
  * puppeteer-ghost - puppeteer library to bypass bot detection
- * @namespace
+ * @type {import('puppeteer-extra').PuppeteerExtra}
  */
 export default puppeteer;
