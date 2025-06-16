@@ -2,6 +2,14 @@
  * @fileoverview puppeteer-ghost - puppeteer library to bypass bot detection
  * @author ovftank
  * @version 0.0.1
+ * @typedef {import('rebrowser-puppeteer').Browser} Browser
+ * @typedef {import('rebrowser-puppeteer').Page} Page
+ * @typedef {import('rebrowser-puppeteer').LaunchOptions} LaunchOptions
+ * @typedef {import('rebrowser-puppeteer').MouseClickOptions} MouseClickOptions
+ * @typedef {import('rebrowser-puppeteer').TypeOptions} TypeOptions
+ * @typedef {import('rebrowser-puppeteer').WaitForSelectorOptions} WaitForSelectorOptions
+ * @typedef {import('rebrowser-puppeteer').KeyboardTypeOptions} KeyboardTypeOptions
+ * @typedef {import('puppeteer-extra').PuppeteerExtra} PuppeteerExtra
  */
 
 import { addExtra } from 'puppeteer-extra';
@@ -9,7 +17,10 @@ import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import UserPreferencesPlugin from 'puppeteer-extra-plugin-user-preferences';
 import rebrowserPuppeteer from 'rebrowser-puppeteer';
 
-/** @type {import('puppeteer-extra').PuppeteerExtra} */
+/**
+ * puppeteer instance
+ * @type {PuppeteerExtra}
+ */
 const puppeteer = addExtra(rebrowserPuppeteer);
 puppeteer.use(StealthPlugin());
 puppeteer.use(
@@ -23,30 +34,42 @@ puppeteer.use(
 );
 
 /**
- * Default launch options with stealth configurations
- * @type {import('rebrowser-puppeteer').LaunchOptions}
+ * default launch options
+ * @type {LaunchOptions}
  */
 const defaultOptions = {
     defaultViewport: null,
     headless: false,
+    browser: 'chrome',
     args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-blink-features=AutomationControlled', '--disable-notifications', '--disable-extensions', '--disable-webrtc', '--disable-webrtc-encryption', '--disable-webrtc-hw-encoding', '--disable-webrtc-hw-decoding', '--disable-save-password-bubble', '--disable-features=PasswordLeakDetection']
 };
 
+/**
+ * @type {function(LaunchOptions=): Promise<Browser>}
+ */
 const originalLaunch = puppeteer.launch.bind(puppeteer);
+
+/**
+ * launch a new browser instance
+ * @param {LaunchOptions} [options={}] - Launch options
+ * @returns {Promise<Browser>} - Browser instance
+ */
 puppeteer.launch = async (options = {}) => {
     const mergedOptions = { ...defaultOptions, ...options };
 
     const browser = await originalLaunch(mergedOptions);
 
+    /**
+     * @returns {Promise<Page>} - Page instance
+     */
     browser.newPage = async () => {
         const pages = await browser.pages();
-        /** @type {import('rebrowser-puppeteer').Page} */
+        /** @type {Page} */
         const page = pages[0];
 
         /**
-         * click method with human-like behavior
          * @param {string} selector - CSS selector
-         * @param {import('rebrowser-puppeteer').MouseClickOptions} [options={}] - Click options
+         * @param {MouseClickOptions} [options={}] - Click options
          * @returns {Promise<void>}
          */
         page.click = async (selector, options = {}) => {
@@ -72,19 +95,21 @@ puppeteer.launch = async (options = {}) => {
         };
 
         /**
-         * type with human-like behavior
          * @param {string} selector - CSS selector
          * @param {string} text - Text to type
-         * @param {import('rebrowser-puppeteer').TypeOptions} [options={}] - Type options
+         * @param {TypeOptions} [options={}] - Type options
          * @returns {Promise<void>}
          */
         page.type = async (selector, text, options = {}) => {
             await page.click(selector);
 
+            const delay = options.delay !== undefined
+                ? options.delay
+                : 10 + Math.random() * 40;
+
             for (const char of text) {
                 await page.keyboard.type(char, {
-                    delay: 10 + Math.random() * 40,
-                    ...options
+                    delay: delay
                 });
             }
         };
@@ -97,6 +122,6 @@ puppeteer.launch = async (options = {}) => {
 
 /**
  * puppeteer-ghost - puppeteer library to bypass bot detection
- * @type {import('puppeteer-extra').PuppeteerExtra}
+ * @type {PuppeteerExtra}
  */
 export default puppeteer;
