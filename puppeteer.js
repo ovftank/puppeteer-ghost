@@ -41,7 +41,7 @@ const defaultOptions = {
     defaultViewport: null,
     headless: false,
     browser: 'chrome',
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-blink-features=AutomationControlled', '--disable-notifications', '--disable-extensions', '--disable-webrtc', '--disable-webrtc-encryption', '--disable-webrtc-hw-encoding', '--disable-webrtc-hw-decoding', '--disable-save-password-bubble', '--disable-features=PasswordLeakDetection']
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-blink-features=AutomationControlled', '--disable-notifications', '--disable-extensions', '--disable-webrtc', '--disable-webrtc-encryption', '--disable-webrtc-hw-encoding', '--disable-webrtc-hw-decoding', '--disable-webrtc-multiple-routes', '--disable-webrtc-hide-local-ips-with-mdns', '--disable-webrtc-apm-downmix-capture-audio-method', '--disable-chrome-wide-echo-cancellation', '--disable-webrtc-allow-wgc-screen-capturer', '--disable-webrtc-allow-wgc-window-capturer', '--disable-webrtc-wgc-require-border', '--disable-save-password-bubble', '--disable-features=PasswordLeakDetection']
 };
 
 /**
@@ -50,26 +50,67 @@ const defaultOptions = {
 const originalLaunch = puppeteer.launch.bind(puppeteer);
 
 /**
+ * check if Chrome is installed
+ * @returns {Promise<string|null>} path to Chrome or null if not found
+ */
+const findChromePath = async () => {
+    const paths = ['C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe', 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe', '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/google-chrome-stable'];
+
+    for (const path of paths) {
+        try {
+            await import('fs').then((fs) => fs.promises.access(path));
+            return path;
+        } catch {}
+    }
+
+    return null;
+};
+
+/**
  * launch a new browser instance
- * @param {LaunchOptions} [options={}] - Launch options
- * @returns {Promise<Browser>} - Browser instance
+ * @param {LaunchOptions} [options={}] - launch options
+ * @returns {Promise<Browser>} - browser instance
  */
 puppeteer.launch = async (options = {}) => {
     const mergedOptions = { ...defaultOptions, ...options };
 
+    if (!mergedOptions.executablePath) {
+        const chromePath = await findChromePath();
+        if (chromePath) {
+            mergedOptions.executablePath = chromePath;
+        }
+    }
+
     const browser = await originalLaunch(mergedOptions);
 
     /**
-     * @returns {Promise<Page>} - Page instance
+     * @returns {Promise<Page>} - page instance
      */
     browser.newPage = async () => {
         const pages = await browser.pages();
         /** @type {Page} */
         const page = pages[0];
 
+        await page.evaluateOnNewDocument(() => {
+            const rtcObject = {
+                createDataChannel: () => null,
+                createOffer: () => null,
+                createAnswer: () => null,
+                setLocalDescription: () => null,
+                setRemoteDescription: () => null
+            };
+
+            window.RTCPeerConnection = function () {
+                return rtcObject;
+            };
+            window.webkitRTCPeerConnection = function () {
+                return rtcObject;
+            };
+        });
+
         /**
-         * @param {string} selector - CSS selector
-         * @param {MouseClickOptions} [options={}] - Click options
+         * @param {string} selector - css selector
+         * @param {MouseClickOptions} [options={}] - click options
          * @returns {Promise<void>}
          */
         page.click = async (selector, options = {}) => {
@@ -95,17 +136,15 @@ puppeteer.launch = async (options = {}) => {
         };
 
         /**
-         * @param {string} selector - CSS selector
-         * @param {string} text - Text to type
-         * @param {TypeOptions} [options={}] - Type options
+         * @param {string} selector - css selector
+         * @param {string} text - text to type
+         * @param {TypeOptions} [options={}] - type options
          * @returns {Promise<void>}
          */
         page.type = async (selector, text, options = {}) => {
             await page.click(selector);
 
-            const delay = options.delay !== undefined
-                ? options.delay
-                : 10 + Math.random() * 40;
+            const delay = options.delay !== undefined ? options.delay : 10 + Math.random() * 40;
 
             for (const char of text) {
                 await page.keyboard.type(char, {

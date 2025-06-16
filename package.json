@@ -1,6 +1,6 @@
 {
     "name": "puppeteer-ghost",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "puppeteer library to bypass bot detection",
     "main": "puppeteer.js",
     "type": "module",

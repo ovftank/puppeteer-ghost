@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/puppeteer-ghost/latest)](https://www.npmjs.com/package/puppeteer-ghost)
 
-- Bypass CDP,Proxy, webdriver detection
+- Bypass CDP, Proxy, webdriver detection
 - Blocks WebRTC to prevent IP leaks
 - Works exactly like regular Puppeteer - just import and go
 
