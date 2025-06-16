@@ -1,0 +1,36 @@
+{
+    "name": "puppeteer-ghost",
+    "version": "0.0.1",
+    "description": "puppeteer library to bypass bot detection",
+    "main": "puppeteer.js",
+    "type": "module",
+    "exports": {
+        ".": {
+            "import": "./puppeteer.js",
+            "default": "./puppeteer.js"
+        }
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@github.com/ovftank/puppeteer-ghost.git"
+    },
+    "keywords": [
+        "puppeteer",
+        "stealth",
+        "bypass",
+        "webdriver",
+        "undetect"
+    ],
+    "author": "ovftank",
+    "license": "ISC",
+    "dependencies": {
+        "puppeteer-extra": "3.3.6",
+        "puppeteer-extra-plugin-stealth": "2.11.2",
+        "puppeteer-extra-plugin-user-preferences": "2.4.1",
+        "rebrowser-puppeteer": "24.8.1"
+    },
+    "bugs": {
+        "url": "https://github.com/ovftank/puppeteer-ghost/issues"
+    },
+    "homepage": "https://github.com/ovftank/puppeteer-ghost#readme"
+}
