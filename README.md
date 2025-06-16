@@ -21,17 +21,9 @@ yarn add puppeteer-ghost
 ```js
 import puppeteer from 'puppeteer-ghost';
 
-const browser = await puppeteer.launch({ headless: false });
+const browser = await puppeteer.launch();
 const page = await browser.newPage();
-
-await page.goto('https://example.com');
-
-await page.click('#login-button');
-
-await page.type('#username', 'myusername');
-await page.type('#password', 'mypassword');
-
-await browser.close();
+await page.goto('https://www.browserscan.net/')
 ```
 
 ## Custom options
