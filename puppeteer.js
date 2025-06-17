@@ -80,8 +80,11 @@ const findChromePath = async () => {
 puppeteer.launch = async (options = {}) => {
     const mergedOptions = { ...defaultOptions, ...options };
 
+    const proxyConfig = mergedOptions.proxy ? { ...mergedOptions.proxy } : null;
+
     if (mergedOptions.proxy?.server) {
-        mergedOptions.args.push(`--proxy-server=${mergedOptions.proxy.server}`);
+        const server = mergedOptions.proxy.server.replace('http://', '').replace('https://', '');
+        mergedOptions.args.push(`--proxy-server=${server}`);
         delete mergedOptions.proxy;
     }
 
@@ -102,10 +105,10 @@ puppeteer.launch = async (options = {}) => {
         /** @type {Page} */
         const page = pages[0];
 
-        if (options.proxy?.username && options.proxy?.password) {
+        if (proxyConfig?.username && proxyConfig?.password) {
             await page.authenticate({
-                username: options.proxy.username,
-                password: options.proxy.password
+                username: proxyConfig.username,
+                password: proxyConfig.password
             });
         }
 
