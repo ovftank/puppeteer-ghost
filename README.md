@@ -4,14 +4,15 @@
 
 - Bypass CDP, Proxy, webdriver detection
 - Blocks WebRTC to prevent IP leaks
-- Works exactly like regular Puppeteer - just import and go
+- Works exactly like regular Puppeteer - just import and use
+- Supports proxy configuration with authentication
 
 ## 📦 Installation
 
 ```bash
-npm install puppeteer-ghost
-# or
 pnpm add puppeteer-ghost
+# or
+npm install puppeteer-ghost
 # or
 yarn add puppeteer-ghost
 ```
@@ -34,6 +35,21 @@ const browser = await puppeteer.launch({
   args: ['--window-size=1920,1080'],
   executablePath: '/path/to/chrome'
 });
+```
+
+## Using with proxy
+
+```js
+const browser = await puppeteer.launch({
+  proxy: {
+    server: 'http://proxy-server:port',
+    username: 'proxy-username', // optional
+    password: 'proxy-password'  // optional
+  }
+});
+
+const page = await browser.newPage();
+await page.goto('https://www.browserscan.net');
 ```
 
 ## Built with

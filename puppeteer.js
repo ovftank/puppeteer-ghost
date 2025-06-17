@@ -10,6 +10,12 @@
  * @typedef {import('rebrowser-puppeteer').WaitForSelectorOptions} WaitForSelectorOptions
  * @typedef {import('rebrowser-puppeteer').KeyboardTypeOptions} KeyboardTypeOptions
  * @typedef {import('puppeteer-extra').PuppeteerExtra} PuppeteerExtra
+ * @typedef {Object} ProxyConfig
+ * @property {string} server - proxy server address
+ * @property {string} [username] - proxy username (if required)
+ * @property {string} [password] - proxy password (if required)
+ * @typedef {Object} GhostLaunchOptions
+ * @property {ProxyConfig} [proxy] - proxy configuration
  */
 
 import { addExtra } from 'puppeteer-extra';
@@ -68,11 +74,16 @@ const findChromePath = async () => {
 
 /**
  * launch a new browser instance
- * @param {LaunchOptions} [options={}] - launch options
+ * @param {GhostLaunchOptions} [options={}] - launch options
  * @returns {Promise<Browser>} - browser instance
  */
 puppeteer.launch = async (options = {}) => {
     const mergedOptions = { ...defaultOptions, ...options };
+
+    if (mergedOptions.proxy?.server) {
+        mergedOptions.args.push(`--proxy-server=${mergedOptions.proxy.server}`);
+        delete mergedOptions.proxy;
+    }
 
     if (!mergedOptions.executablePath) {
         const chromePath = await findChromePath();
@@ -90,6 +101,13 @@ puppeteer.launch = async (options = {}) => {
         const pages = await browser.pages();
         /** @type {Page} */
         const page = pages[0];
+
+        if (options.proxy?.username && options.proxy?.password) {
+            await page.authenticate({
+                username: options.proxy.username,
+                password: options.proxy.password
+            });
+        }
 
         await page.evaluateOnNewDocument(() => {
             const rtcObject = {

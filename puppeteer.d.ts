@@ -2,10 +2,38 @@ import { Browser, LaunchOptions, Page, MouseClickOptions, TypeOptions } from 're
 import { PuppeteerExtra } from 'puppeteer-extra';
 
 /**
+ * proxy configuration
+ */
+export interface ProxyConfig {
+    /**
+     * proxy server address (e.g., http://proxy.example.com:8080)
+     */
+    server: string;
+    /**
+     * proxy username (if required)
+     */
+    username?: string;
+    /**
+     * proxy password (if required)
+     */
+    password?: string;
+}
+
+/**
+ * extended launch options
+ */
+export interface GhostLaunchOptions extends LaunchOptions {
+    /**
+     * proxy configuration
+     */
+    proxy?: ProxyConfig;
+}
+
+/**
  * browser instance
  * @see [browser](https://pptr.dev/api/puppeteer.browser)
  */
-interface GhostBrowser extends Browser {
+export interface GhostBrowser extends Browser {
     /**
      * create new page with anti-detection
      * @see [puppeteer.browser.newpage](https://pptr.dev/api/puppeteer.browser.newpage)
@@ -17,7 +45,7 @@ interface GhostBrowser extends Browser {
  * page instance
  * @see [page](https://pptr.dev/api/puppeteer.page)
  */
-interface GhostPage extends Page {
+export interface GhostPage extends Page {
     /**
      * click on element
      * @param selector - css selector to click
@@ -40,13 +68,13 @@ interface GhostPage extends Page {
  * anti-detection puppeteer
  * @see [puppeteer-ghost](https://www.npmjs.com/package/puppeteer-ghost)
  */
-interface PuppeteerGhost extends PuppeteerExtra {
+export interface PuppeteerGhost extends PuppeteerExtra {
     /**
      * start new browser with anti-detection
      * @param options - launch options
      * @see [puppeteer.launch](https://pptr.dev/api/puppeteer.launchoptions)
      */
-    launch(options?: LaunchOptions): Promise<GhostBrowser>;
+    launch(options?: GhostLaunchOptions): Promise<GhostBrowser>;
 }
 
 /**
