@@ -1,12 +1,17 @@
 {
     "name": "puppeteer-ghost",
-    "version": "0.0.8",
+    "version": "0.0.11",
     "description": "puppeteer library to bypass bot detection",
     "main": "puppeteer.js",
     "type": "module",
     "types": "./puppeteer.d.ts",
     "exports": {
         ".": {
+            "import": "./puppeteer.js",
+            "default": "./puppeteer.js",
+            "types": "./puppeteer.d.ts"
+        },
+        "./puppeteer": {
             "import": "./puppeteer.js",
             "default": "./puppeteer.js",
             "types": "./puppeteer.d.ts"
@@ -26,6 +31,7 @@
     "author": "ovftank",
     "license": "ISC",
     "dependencies": {
+        "puppeteer": "npm:rebrowser-puppeteer@24.8.1",
         "puppeteer-extra": "3.3.6",
         "puppeteer-extra-plugin-stealth": "2.11.2",
         "puppeteer-extra-plugin-user-preferences": "2.4.1",

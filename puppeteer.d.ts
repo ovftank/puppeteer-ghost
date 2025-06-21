@@ -1,5 +1,15 @@
-import { Browser, LaunchOptions, Page, MouseClickOptions, TypeOptions } from 'rebrowser-puppeteer';
+import { Browser, LaunchOptions, Page, MouseClickOptions } from 'rebrowser-puppeteer';
 import { PuppeteerExtra } from 'puppeteer-extra';
+
+/**
+ * keyboard type options
+ */
+export interface TypeOptions {
+    /**
+     * time to wait between key presses in milliseconds
+     */
+    delay?: number;
+}
 
 /**
  * proxy configuration
@@ -59,7 +69,6 @@ export interface GhostPage extends Page {
      * @param selector - css selector to type into
      * @param text - text to type
      * @param options - type options
-     * @see [type-options](https://pptr.dev/api/puppeteer.keyboardtypeoptions)
      */
     type(selector: string, text: string, options?: TypeOptions): Promise<void>;
 }
@@ -68,7 +77,7 @@ export interface GhostPage extends Page {
  * anti-detection puppeteer
  * @see [puppeteer-ghost](https://www.npmjs.com/package/puppeteer-ghost)
  */
-export interface PuppeteerGhost extends PuppeteerExtra {
+export interface PuppeteerGhost {
     /**
      * start new browser with anti-detection
      * @param options - launch options
@@ -80,6 +89,6 @@ export interface PuppeteerGhost extends PuppeteerExtra {
 /**
  * puppeteer-ghost - puppeteer library to bypass bot detection
  */
-declare const puppeteer: PuppeteerGhost;
+declare const puppeteer: PuppeteerGhost & Omit<PuppeteerExtra, 'launch'>;
 
 export default puppeteer;
