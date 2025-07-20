@@ -52,5 +52,5 @@
     },
     "type": "module",
     "types": "./lib/types/index.d.ts",
-    "version": "0.0.14"
+    "version": "0.0.15"
 }

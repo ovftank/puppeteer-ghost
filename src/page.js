@@ -305,7 +305,6 @@ export const enhancePage = async (page, proxyAuth = null) => {
     try {
         await client.send('Network.setUserAgentOverride', {
             userAgent: await page.evaluate(() => navigator.userAgent),
-            acceptLanguage: 'en-US,en;q=0.9',
             platform: 'Win32'
         });
     } catch (e) {}
