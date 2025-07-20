@@ -1,7 +1,7 @@
 /**
  * @fileoverview puppeteer-ghost - puppeteer library to bypass bot detection
  * @author ovftank
- * @version 0.0.13
+ * @version 0.0.14
  * @typedef {import('puppeteer-extra').PuppeteerExtra} PuppeteerExtra
  * @typedef {import('./browser.js').Browser} Browser
  * @typedef {import('./browser.js').GhostLaunchOptions} GhostLaunchOptions
