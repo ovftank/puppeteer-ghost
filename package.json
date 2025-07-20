@@ -1,35 +1,8 @@
 {
-    "name": "puppeteer-ghost",
-    "version": "0.0.11",
-    "description": "puppeteer library to bypass bot detection",
-    "main": "puppeteer.js",
-    "type": "module",
-    "types": "./puppeteer.d.ts",
-    "exports": {
-        ".": {
-            "import": "./puppeteer.js",
-            "default": "./puppeteer.js",
-            "types": "./puppeteer.d.ts"
-        },
-        "./puppeteer": {
-            "import": "./puppeteer.js",
-            "default": "./puppeteer.js",
-            "types": "./puppeteer.d.ts"
-        }
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+ssh://git@github.com/ovftank/puppeteer-ghost.git"
-    },
-    "keywords": [
-        "puppeteer",
-        "stealth",
-        "bypass",
-        "webdriver",
-        "undetect"
-    ],
     "author": "ovftank",
-    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/ovftank/puppeteer-ghost/issues"
+    },
     "dependencies": {
         "puppeteer": "npm:rebrowser-puppeteer@24.8.1",
         "puppeteer-extra": "3.3.6",
@@ -37,8 +10,47 @@
         "puppeteer-extra-plugin-user-preferences": "2.4.1",
         "rebrowser-puppeteer": "24.8.1"
     },
-    "bugs": {
-        "url": "https://github.com/ovftank/puppeteer-ghost/issues"
+    "description": "puppeteer library to bypass bot detection",
+    "devDependencies": {
+        "esbuild": "0.25.8"
     },
-    "homepage": "https://github.com/ovftank/puppeteer-ghost#readme"
+    "exports": {
+        ".": {
+            "types": "./lib/types/index.d.ts",
+            "import": "./lib/index.js",
+            "default": "./lib/index.js"
+        },
+        "./types/*": {
+            "types": "./lib/types/*.d.ts"
+        }
+    },
+    "files": [
+        "lib/",
+        "README.md",
+        "LICENSE"
+    ],
+    "homepage": "https://github.com/ovftank/puppeteer-ghost#readme",
+    "keywords": [
+        "puppeteer",
+        "stealth",
+        "bypass",
+        "webdriver",
+        "undetect"
+    ],
+    "license": "ISC",
+    "main": "./lib/index.js",
+    "name": "puppeteer-ghost",
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@github.com/ovftank/puppeteer-ghost.git"
+    },
+    "scripts": {
+        "build": "node build.js",
+        "dev": "node build.js && node examples/basic.js",
+        "prepublishOnly": "pnpm run build",
+        "test": "node tests/basic.test.js"
+    },
+    "type": "module",
+    "types": "./lib/types/index.d.ts",
+    "version": "0.0.13"
 }

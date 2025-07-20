@@ -1,2 +1,2 @@
-import puppeteer from './puppeteer.js';
+import puppeteer from './lib/index.js';
 export default puppeteer;

@@ -63,7 +63,6 @@ export interface GhostPage extends Page {
      * @see [click-options](https://pptr.dev/api/puppeteer.mouseoptions)
      */
     click(selector: string, options?: MouseClickOptions): Promise<void>;
-
     /**
      * write text to input, textarea, etc.
      * @param selector - css selector to type into
